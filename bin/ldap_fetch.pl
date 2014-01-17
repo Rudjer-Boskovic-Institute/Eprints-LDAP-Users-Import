@@ -7,7 +7,7 @@ use Net::LDAP;
 my $server = "ldap.example.com";
 my $ldap = Net::LDAP->new( $server ) or die $@;
 
-my $eprintsUsersString = `/usr/share/eprints3/bin/export irb user ListUserUsernames`;
+my $eprintsUsersString = `/opt/eprints3/bin/export irb user ListUserUsernames`;
 
 my @eprintsUsers = split /\n/, $eprintsUsersString;
 
@@ -18,8 +18,7 @@ my $attrs = [ 'uid', 'givenName', 'sn', 'mail', 'hrEduPersonPersistentID' ];
  
 my $result = $ldap->search(
 	base   => "$base",
-	#filter => "sn=*",
-	filter => "(&(objectClass=person)(objectClass=irbMailAccount))",
+	filter => "(&(objectClass=person)(!(employeeType=Unknown*))(!(employeeType=Former*))(!(sn=HREDUADMIN)))",
 	attrs  => $attrs
 );
  
